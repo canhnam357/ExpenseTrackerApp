@@ -3,8 +3,11 @@ package xyz.erotskoob.expensetrackerapp.Users;
 import jakarta.persistence.*;
 import lombok.*;
 import xyz.erotskoob.expensetrackerapp.Enums.Role;
+import xyz.erotskoob.expensetrackerapp.RefreshTokens.RefreshToken;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,7 +37,7 @@ public class User {
     private Role role;
 
     @Builder.Default
-    private boolean accountNonLocked = true;
+    private boolean locked = false;
 
     @Builder.Default
     private boolean enabled = false;
@@ -48,6 +51,10 @@ public class User {
     private Instant updatedDate;
 
     private Instant lockedDate;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 
     @PrePersist
     private void prePersist() {
